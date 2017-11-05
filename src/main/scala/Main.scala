@@ -37,7 +37,7 @@ object Main {
 
     // Write the image to a file
     // (from: https://www.javadrive.jp/java2d/bufferedImage/index2.html)
-    ImageIO.write(image, "png", new File("output.png"))
+    ImageIO.write(image, "png", new File("images/output.png"))
   }
 
   /**
