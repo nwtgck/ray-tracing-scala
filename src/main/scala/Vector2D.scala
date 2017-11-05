@@ -26,4 +26,7 @@ case class Vector2D(x: Float, y: Float) {
   def normalize: Vector2D =
     this / norm
 
+  def dot(that: Vector2D): Float =
+    x*that.x + y*that.y
+
 }

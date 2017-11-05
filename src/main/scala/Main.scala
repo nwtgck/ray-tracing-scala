@@ -10,6 +10,14 @@ import java.awt.{Color, Image}
   */
 case class Ray(origin: Vector3D, direction: Vector3D)
 
+/**
+  * Sphere
+  * @param radius
+  * @param position
+  * @param color
+  */
+case class Sphere(radius: Float, position: Vector3D, color: Color)
+
 object Main {
   def main(args: Array[String]): Unit = {
 
@@ -33,16 +41,46 @@ object Main {
 
     // (highly referenced from: https://qiita.com/doxas/items/477fda867da467116f8d)
 
+    // fragment position
     val p: Vector2D = (fragCoord * 2.0f - Vector2D(width, height)) / Math.min(height, width)
+
+    // Create a ray
     val ray: Ray = Ray(
       origin    = Vector3D(0.0f, 0.0f, 5.0f),
       direction = Vector3D(p.x, p.y, -1.0f).normalize
     )
 
-    val color: Color = makeColor(ray.direction.x, ray.direction.y, ray.direction.z)
+    // Make a sphere
+    val sphere: Sphere = Sphere(
+      radius   = 1.0f,
+      position = Vector3D(0.0f, 0.0f, 0.0f),
+      color    = Color.white
+    )
 
-    color
+    // hit check
+    val destColor: Color =
+      if(intersectSphere(ray, sphere)){
+        sphere.color
+      } else {
+        Color.black
+      }
+
+    destColor
   }
+
+  def intersectSphere(ray: Ray, sphere: Sphere): Boolean = {
+    val a: Vector3D = ray.origin - sphere.position
+    val b: Float = a.dot(ray.direction)
+    val c: Float = a.dot(a) - (sphere.radius * sphere.radius)
+    val d: Float = b * b - c
+    if(d > 0.0){
+      val t: Float = -b - Math.sqrt(d).toFloat
+      t > 0.0
+    } else {
+      false
+    }
+  }
+
 
   /**
     * Making color utility

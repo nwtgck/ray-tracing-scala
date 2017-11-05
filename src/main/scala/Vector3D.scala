@@ -28,5 +28,8 @@ case class Vector3D(x: Float, y: Float, z: Float) {
   def normalize: Vector3D =
     this / norm
 
+  def dot(that: Vector3D): Float =
+    x*that.x + y*that.y + z*that.z
+
 
 }
