@@ -19,12 +19,12 @@ object Main {
     * Calculate pixel color
     * @param width
     * @param height
-    * @param x
-    * @param y
+    * @param fragCoord
     * @return
     */
-  def calcPixelColor(width: Int, height: Int, x: Int, y: Int): Color = {
-    val color: Color = new Color(0xff, 0x00, 0x00)
+  def calcPixelColor(width: Int, height: Int, fragCoord: Vector2D): Color = {
+    val a: Float = fragCoord.x / width
+    val color: Color = new Color(a, a, a)
 
     color
   }
@@ -42,7 +42,11 @@ object Main {
       x <- 0 until image.getWidth
       y <- 0 until image.getHeight
     } {
-      val color: Color = calcPixelColor(image.getWidth, image.getHeight, x, y)
+      val color: Color = calcPixelColor(
+        image.getWidth,
+        image.getHeight,
+        fragCoord = Vector2D(x, image.getHeight - y /* NOTE: Change coordinate system */ )
+      )
       image.setRGB(x, y, color.getRGB) // (Color#getRGB from: https://www.javamex.com/tutorials/graphics/bufferedimage_setrgb.shtml)
     }
 
