@@ -18,6 +18,16 @@ case class Ray(origin: Vector3D, direction: Vector3D)
   */
 case class Sphere(radius: Float, position: Vector3D, color: Color)
 
+
+/**
+  * Intersection
+  * @param hits     flag of hits
+  * @param hitPoint coordinate of hit
+  * @param normal   normal vector
+  * @param color    color or hit
+  */
+case class Intersection(hits: Boolean, hitPoint: Vector3D, normal: Vector3D, color: Color)
+
 object Main {
   def main(args: Array[String]): Unit = {
 
@@ -58,26 +68,41 @@ object Main {
     )
 
     // hit check
-    val destColor: Color =
-      if(intersectSphere(ray, sphere)){
-        sphere.color
-      } else {
-        Color.black
-      }
+    val i: Intersection = intersectSphere(ray, sphere)
 
-    destColor
+    i.color
   }
 
-  def intersectSphere(ray: Ray, sphere: Sphere): Boolean = {
+  def intersectSphere(ray: Ray, sphere: Sphere): Intersection = {
+
+    val notHitIntersection: Intersection = Intersection(
+      hits     = false,
+      hitPoint = Vector3D(0.0f, 0.0f, 0.0f),
+      normal   = Vector3D(0.0f, 0.0f, 0.0f),
+      color    = Color.black
+    )
+
     val a: Vector3D = ray.origin - sphere.position
     val b: Float = a.dot(ray.direction)
     val c: Float = a.dot(a) - (sphere.radius * sphere.radius)
     val d: Float = b * b - c
     if(d > 0.0){
       val t: Float = -b - Math.sqrt(d).toFloat
-      t > 0.0
+      if(t > 0.0){
+        val hitPoint: Vector3D = ray.origin + ray.direction * t
+        val normal  : Vector3D = (hitPoint - sphere.position).normalize
+        val d       : Float    = clamp(Vector3D(1.0f, 1.0f, 1.0f).normalize.dot(normal), 0.1f, 1.0f)
+        Intersection(
+          hits     = true,
+          hitPoint = hitPoint,
+          normal   = normal,
+          color    = colorTimes(sphere.color, d)
+        )
+      } else {
+        notHitIntersection
+      }
     } else {
-      false
+      notHitIntersection
     }
   }
 
@@ -92,6 +117,16 @@ object Main {
   def makeColor(r: Float, g: Float, b: Float): Color = {
     new Color(clamp(r, 0.0f, 1.0f), clamp(g, 0.0f, 1.0f), clamp(b, 0.0f, 1.0f))
   }
+
+  /**
+    * Multiply for Color
+    * @param color
+    * @param f
+    * @return
+    */
+  def colorTimes(color: Color, f: Float): Color =
+    new Color(clamp(color.getRed * f, 0, 255).toInt, clamp(color.getGreen * f, 0, 255).toInt, clamp(color.getBlue * f, 0, 255).toInt)
+
 
   def clamp(f: Float, min: Float, max: Float): Float =
     if(f < min){
