@@ -30,10 +30,12 @@ case class Intersection(hits: Boolean, hitPoint: Vector3D, normal: Vector3D, col
 
 object Main {
   def main(args: Array[String]): Unit = {
+    saveImage()
+  }
 
-
+  def saveImage(): Unit = {
     // Make rendered image
-    val image: RenderedImage = makeRenderedImage(width = 512, height = 512)
+    val image: RenderedImage = makeRenderedImage(width = 512, height = 512, time = 0.0f)
 
     // Write the image to a file
     // (from: https://www.javadrive.jp/java2d/bufferedImage/index2.html)
@@ -44,10 +46,11 @@ object Main {
     * Calculate pixel color
     * @param width
     * @param height
+    * @param time
     * @param fragCoord
     * @return
     */
-  def calcPixelColor(width: Int, height: Int, fragCoord: Vector2D): Color = {
+  def calcPixelColor(width: Int, height: Int, time: Float, fragCoord: Vector2D): Color = {
 
     // (highly referenced from: https://qiita.com/doxas/items/477fda867da467116f8d)
 
@@ -63,7 +66,7 @@ object Main {
     // Make a sphere
     val sphere: Sphere = Sphere(
       radius   = 1.0f,
-      position = Vector3D(0.0f, 0.0f, 0.0f),
+      position = Vector3D(Math.cos(time+Math.PI/2).toFloat, Math.sin(time).toFloat, 0.0f),
       color    = Color.white
     )
 
@@ -143,9 +146,10 @@ object Main {
     * Make rendered image
     * @param width
     * @param height
+    * @param time
     * @return
     */
-  def makeRenderedImage(width: Int, height: Int): RenderedImage = {
+  def makeRenderedImage(width: Int, height: Int, time: Float): RenderedImage = {
     val image: BufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
 
     for{
@@ -153,9 +157,10 @@ object Main {
       y <- 0 until image.getHeight
     } {
       val color: Color = calcPixelColor(
-        image.getWidth,
-        image.getHeight,
-        fragCoord = Vector2D(x, image.getHeight - y /* NOTE: Change coordinate system */ )
+        width     = image.getWidth,
+        height    = image.getHeight,
+        fragCoord = Vector2D(x, image.getHeight - y /* NOTE: Change coordinate system */ ),
+        time      = time
       )
       image.setRGB(x, y, color.getRGB) // (Color#getRGB from: https://www.javamex.com/tutorials/graphics/bufferedimage_setrgb.shtml)
     }
