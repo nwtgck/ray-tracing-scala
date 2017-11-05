@@ -3,6 +3,13 @@ import java.io.File
 import javax.imageio.ImageIO
 import java.awt.{Color, Image}
 
+/**
+  * Ray
+  * @param origin
+  * @param direction
+  */
+case class Ray(origin: Vector3D, direction: Vector3D)
+
 object Main {
   def main(args: Array[String]): Unit = {
 
@@ -23,11 +30,41 @@ object Main {
     * @return
     */
   def calcPixelColor(width: Int, height: Int, fragCoord: Vector2D): Color = {
-    val a: Float = fragCoord.x / width
-    val color: Color = new Color(a, a, a)
+
+    // (highly referenced from: https://qiita.com/doxas/items/477fda867da467116f8d)
+
+    val p: Vector2D = (fragCoord * 2.0f - Vector2D(width, height)) / Math.min(height, width)
+    val ray: Ray = Ray(
+      origin    = Vector3D(0.0f, 0.0f, 5.0f),
+      direction = Vector3D(p.x, p.y, -1.0f).normalize
+    )
+
+    val color: Color = makeColor(ray.direction.x, ray.direction.y, ray.direction.z)
 
     color
   }
+
+  /**
+    * Making color utility
+    * @param r
+    * @param g
+    * @param b
+    * @return
+    */
+  def makeColor(r: Float, g: Float, b: Float): Color = {
+    new Color(clamp(r, 0.0f, 1.0f), clamp(g, 0.0f, 1.0f), clamp(b, 0.0f, 1.0f))
+  }
+
+  def clamp(f: Float, min: Float, max: Float): Float =
+    if(f < min){
+      min
+    } else if(f > max){
+      max
+    } else {
+      f
+    }
+
+
 
   /**
     * Make rendered image
