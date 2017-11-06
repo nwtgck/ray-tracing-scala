@@ -2,6 +2,12 @@
 
 Ray tracing and create a .png image file.
 
+## Main features
+
+* Use only Java/Scala Standard libraries (AWT/Swing)
+* Ray tracing on image-creation base (`java.awt.image.BufferedImage`)
+
+
 ## How to run
 
 ```bash
@@ -9,11 +15,11 @@ cd <this repo>
 sbt run
 ```
 
-Then you can get `<this repo>/images/output.png`
+Then you will have a window
 
-## Result image
+## Demo
 
-![ray tracing](./images/output.png) 
+![ray tracing moving](./demo-images/demo1.gif)
 
 
 ## References

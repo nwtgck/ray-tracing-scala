@@ -1,7 +1,9 @@
+import java.awt.event.{ActionEvent, ActionListener}
 import java.awt.image.{BufferedImage, RenderedImage}
 import java.io.File
 import javax.imageio.ImageIO
-import java.awt.{Color, Image}
+import java.awt._
+import javax.swing.{JFrame, JPanel, Timer}
 
 /**
   * Ray
@@ -28,9 +30,48 @@ case class Sphere(radius: Float, position: Vector3D, color: Color)
   */
 case class Intersection(hits: Boolean, hitPoint: Vector3D, normal: Vector3D, color: Color)
 
+/**
+  * Panel for animation
+  */
+class AnimatedPanel extends JPanel{
+
+  // Time for animation
+  var time: Float = 0.0f
+
+  // Start timer
+  new Timer(50, new ActionListener {
+    override def actionPerformed(e: ActionEvent): Unit = {
+      repaint()
+      time += 0.1f
+    }
+  }).start()
+
+  override def paintComponent(g: Graphics): Unit = {
+    val g2: Graphics2D = g.asInstanceOf[Graphics2D]
+    val image: BufferedImage = Main.makeRenderedImage(width = getWidth, height = getHeight, time = time) // TODO Change Main.makeRenderedImage to a parameter
+    g2.drawImage(image, 0, 0, this)
+  }
+}
+
 object Main {
   def main(args: Array[String]): Unit = {
-    saveImage()
+
+    if(false){
+      saveImage()
+    }
+
+
+    val width : Int = 512
+    val height: Int = 512
+
+    val frame = new JFrame()
+    val animatedPanel = new AnimatedPanel()
+
+    frame.setSize(width, height)
+    frame.getContentPane.add(animatedPanel)
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+    frame.setVisible(true)
+
   }
 
   def saveImage(): Unit = {
@@ -66,7 +107,7 @@ object Main {
     // Make a sphere
     val sphere: Sphere = Sphere(
       radius   = 1.0f,
-      position = Vector3D(Math.cos(time+Math.PI/2).toFloat, Math.sin(time).toFloat, 0.0f),
+      position = Vector3D(Math.cos(time+Math.PI/2).toFloat, Math.sin(time).toFloat, 2*Math.sin(time).toFloat),
       color    = Color.white
     )
 
@@ -149,7 +190,7 @@ object Main {
     * @param time
     * @return
     */
-  def makeRenderedImage(width: Int, height: Int, time: Float): RenderedImage = {
+  def makeRenderedImage(width: Int, height: Int, time: Float): BufferedImage = {
     val image: BufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
 
     for{
