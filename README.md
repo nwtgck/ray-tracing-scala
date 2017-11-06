@@ -4,7 +4,7 @@ Ray tracing and create a .png image file.
 
 ## Main features
 
-* Use only Java/Scala Standard libraries (AWT/Swing)
+* No Graphic library (Use only Java/Scala standard lib)
 * Ray tracing on image-creation base (`java.awt.image.BufferedImage`)
 
 
