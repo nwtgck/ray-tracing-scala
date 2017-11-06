@@ -26,6 +26,21 @@ object SphareRayTracingMain {
   }
 
   /**
+    * Calculate normal vector of p
+    * @param p
+    * @param distanceFunc
+    * @return
+    */
+  def calcNormal(p: Vector3D, distanceFunc: Vector3D => Float): Vector3D = {
+    val d: Float = 0.0001f // Very small number
+    Vector3D(
+      distanceFunc(p + Vector3D(d,    0.0f, 0.0f)) - distanceFunc(p + Vector3D(-d,    0.0f, 0.0f)),
+      distanceFunc(p + Vector3D(0.0f,    d, 0.0f)) - distanceFunc(p + Vector3D(0.0f,    -d, 0.0f)),
+      distanceFunc(p + Vector3D(0.0f, 0.0f,    d)) - distanceFunc(p + Vector3D(0.0f, 0.0f,    -d))
+    ).normalize
+  }
+
+  /**
     * Calculate pixel color
     * @param width
     * @param height
@@ -35,12 +50,14 @@ object SphareRayTracingMain {
     */
   def calcPixelColor(width: Int, height: Int, time: Float, fragCoord: Vector2D): Color = {
 
-    // (highly referenced from: https://wgld.org/d/glsl/g009.html)
+    // (highly referenced from: https://wgld.org/d/glsl/g010.html)
 
     // The number of marching-loop
-    val NMarchingLoop: Int   = 16
-    // Small number for collision detection
-    val Epsilon      : Float = 0.001f
+    val NMarchingLoop: Int      = 16
+    // Very small number for collision detection
+    val Epsilon      : Float    = 0.001f
+    // Direction of light
+    val lightDir     : Vector3D = Vector3D(-0.577f, 0.577f, 0.577f)
 
     // fragment position
     val p: Vector2D = (fragCoord * 2.0f - Vector2D(width, height)) / Math.min(height, width)
@@ -73,7 +90,9 @@ object SphareRayTracingMain {
     }
 
     if(distance.abs < Epsilon){
-      Color.white
+      val normal: Vector3D = calcNormal(rPos, distanceFunc)
+      val diff  : Float    = Util.clamp(lightDir.dot(normal), 0.1f, 1.0f)
+      Util.makeColor(diff, diff, diff)
     } else {
       Color.black
     }
