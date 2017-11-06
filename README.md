@@ -10,22 +10,34 @@ Ray tracing and create a .png image file.
 
 ## How to run
 
+### Saving as an image
+
 ```bash
 cd <this repo>
-sbt run
+sbt "runMain SavePngMain"
+```
+
+Then you will get `<this repo>/images/output.png`
+
+### Animation of ray tracing
+
+```bash
+cd <this repo>
+sbt "runMain AnimationMain"
 ```
 
 Then you will have a window
 
 ## Source codes
 
-### Entry point
+### Entry points
 
-[./src/main/scala/Main.scala](./src/main/scala/Main.scala)
+* [src/main/scala/SavePngMain.scala](src/main/scala/SavePngMain.scala)
+* [src/main/scala/AnimationMain.scala](src/main/scala/AnimationMain.scala)
 
 ### Main part of ray tracing
 
-[./src/main/scala/RayTracing.scala](./src/main/scala/RayTracing.scala)
+* [src/main/scala/RayTracing.scala](src/main/scala/RayTracing.scala)
 
 ## Demo
 
