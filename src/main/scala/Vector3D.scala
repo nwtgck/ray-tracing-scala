@@ -31,5 +31,12 @@ case class Vector3D(x: Float, y: Float, z: Float) {
   def dot(that: Vector3D): Float =
     x*that.x + y*that.y + z*that.z
 
+  // (from: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/cross.xhtml)
+  def cross(that: Vector3D): Vector3D =
+    Vector3D(
+      y*that.z - that.y * z,
+      z*that.x - that.z * x,
+      x*that.y - that.x * y
+    )
 
 }
