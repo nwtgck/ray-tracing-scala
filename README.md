@@ -28,21 +28,36 @@ sbt "runMain AnimationMain"
 
 Then you will have a window
 
+or 
+
+```bash
+cd <this repo>
+sbt "runMain SphereRayTracingMain"
+```
+
+Then you will have a window
+
+
 ## Source codes
 
 ### Entry points
 
 * [src/main/scala/SavePngMain.scala](src/main/scala/SavePngMain.scala)
 * [src/main/scala/AnimationMain.scala](src/main/scala/AnimationMain.scala)
+* [src/main/scala/SphereRayTracingMain.scala](src/main/scala/SphereRayTracingMain.scala) (using distance function)
 
 ### Main part of ray tracing
 
 * [src/main/scala/RayTracing.scala](src/main/scala/RayTracing.scala)
 
-## Demo
+## Demo of AnimationMain
 
 ![ray tracing moving](./demo-images/demo1.gif)
 
+
+## Demo of SphereRayTracingMain
+
+![sphere ray tracing moving](./demo-images/demo2.gif)
 
 ## References
 

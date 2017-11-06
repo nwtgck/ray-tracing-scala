@@ -1,7 +1,7 @@
 import java.awt.Color
 import javax.swing.JFrame
 
-object SphareRayTracingMain {
+object SphereRayTracingMain {
   def main(args: Array[String]): Unit = {
     val width: Int  = 300
     val height: Int = 300
