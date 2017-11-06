@@ -29,4 +29,10 @@ case class Vector2D(x: Float, y: Float) {
   def dot(that: Vector2D): Float =
     x*that.x + y*that.y
 
+
+  def applyElem(f: Float => Float): Vector2D =
+    Vector2D(f(x), f(y))
+
+  def abs: Vector2D = this.applyElem(_.abs)
+
 }

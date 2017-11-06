@@ -3,8 +3,8 @@ import javax.swing.JFrame
 
 object SphareRayTracingMain {
   def main(args: Array[String]): Unit = {
-    val width: Int = 512
-    val height: Int = 512
+    val width: Int  = 300
+    val height: Int = 300
 
     val frame = new JFrame()
     val animatedPanel = new AnimatedPanel(calcPixelColor)
@@ -20,9 +20,18 @@ object SphareRayTracingMain {
     * @param p
     * @return
     */
-  def distanceFunc(p: Vector3D): Float = {
-    val radius: Float = 1.0f
-    p.norm - radius
+  def distanceFunc(p: Vector3D, time: Float): Float = {
+
+    // Rotate X by time
+    val p2 = DistanceFunctions.rotateX(p, time * 0.8f)
+
+    // Calc distance of box
+    val box: Float = (p2.abs - Vector3D(0.5f, 0.5f, 0.5f)).applyElem(_.max(0.0f)).norm
+
+    // Calc distance of sphere
+    val sphere: Float = DistanceFunctions.sdSphere(p2, radius = 0.6f)
+
+    box `max` sphere
   }
 
   /**
@@ -31,12 +40,12 @@ object SphareRayTracingMain {
     * @param distanceFunc
     * @return
     */
-  def calcNormal(p: Vector3D, distanceFunc: Vector3D => Float): Vector3D = {
+  def calcNormal(p: Vector3D, distanceFunc: (Vector3D, Float) => Float, time: Float): Vector3D = {
     val d: Float = 0.0001f // Very small number
     Vector3D(
-      distanceFunc(p + Vector3D(d,    0.0f, 0.0f)) - distanceFunc(p + Vector3D(-d,    0.0f, 0.0f)),
-      distanceFunc(p + Vector3D(0.0f,    d, 0.0f)) - distanceFunc(p + Vector3D(0.0f,    -d, 0.0f)),
-      distanceFunc(p + Vector3D(0.0f, 0.0f,    d)) - distanceFunc(p + Vector3D(0.0f, 0.0f,    -d))
+      distanceFunc(p + Vector3D(d,    0.0f, 0.0f), time) - distanceFunc(p + Vector3D(-d,    0.0f, 0.0f), time),
+      distanceFunc(p + Vector3D(0.0f,    d, 0.0f), time) - distanceFunc(p + Vector3D(0.0f,    -d, 0.0f), time),
+      distanceFunc(p + Vector3D(0.0f, 0.0f,    d), time) - distanceFunc(p + Vector3D(0.0f, 0.0f,    -d), time)
     ).normalize
   }
 
@@ -84,13 +93,13 @@ object SphareRayTracingMain {
     // Position of current ray
     var rPos    : Vector3D = cPos
     for(i <- 0 until NMarchingLoop){
-      distance = distanceFunc(rPos)
+      distance = distanceFunc(rPos, time)
       rLen += distance
       rPos = cPos + ray * rLen
     }
 
     if(distance.abs < Epsilon){
-      val normal: Vector3D = calcNormal(rPos, distanceFunc)
+      val normal: Vector3D = calcNormal(rPos, distanceFunc, time)
       val diff  : Float    = Util.clamp(lightDir.dot(normal), 0.1f, 1.0f)
       Util.makeColor(diff, diff, diff)
     } else {

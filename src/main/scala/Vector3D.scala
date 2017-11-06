@@ -39,4 +39,11 @@ case class Vector3D(x: Float, y: Float, z: Float) {
       x*that.y - that.x * y
     )
 
+  def applyElem(f: Float => Float): Vector3D =
+    Vector3D(f(x), f(y), f(z))
+
+  def abs: Vector3D =
+    Vector3D(x.abs, y.abs, z.abs)
+
+
 }
